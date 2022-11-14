@@ -3,7 +3,6 @@ var http = require('http');
 var server = http.createServer(handleReq);
 
 function handleReq(req, res) {
-  console.log(req, res);
   res.end('THE END');
 }
 
