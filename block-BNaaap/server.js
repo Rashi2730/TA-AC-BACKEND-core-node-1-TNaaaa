@@ -3,6 +3,7 @@ var http = require('http');
 var server = http.createServer(handlereq);
 
 function handlereq(req, res) {
+  console.log(req.method);
   res.writeHead(201, { 'Content-Type': 'text/html' });
   res.write('Hello');
   res.write('World');
