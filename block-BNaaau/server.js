@@ -2,8 +2,7 @@
 // // var server = http.createServer(handleReq);
 
 // // function handleReq(req, res) {
-// //   console.log(req);
-// //   res.write('WOOSH');
+// //   console.log(req,res);
 // //   res.end();
 // // }
 
@@ -33,7 +32,7 @@
 
 // // function handleReq(req, res) {
 // //   console.log(req.headers);
-// //   res.end(req.headers.connection);
+// //   res.end(req.headers['user-agent']);
 // // }
 
 // // server.listen(5555, () => {
@@ -47,7 +46,7 @@
 
 // // function handleReq(req, res) {
 // //   console.log(req.method, req.url);
-// //   res.write('Welcome to node');
+// //   res.end(req.method + req.url);
 // //   res.end();
 // // }
 
@@ -57,14 +56,16 @@
 
 // // ///////////////////////////////////////////////////////////////////
 
-// // var http = require('http');
-// // var server = http.createServer(handleReq);
+// var http = require('http');
+// var server = http.createServer(handleReq);
 
-// // function handleReq(req, res) {}
+// function handleReq(req, res) {
+//   res.end(JSON.stringify(req.headers));
+// }
 
-// // server.listen(7000, () => {
-// //   console.log('server listening on port 7000');
-// // });
+// server.listen(7000, () => {
+//   console.log('server listening on port 7000');
+// });
 
 // // /////////////////////////////////////////////////////////////////
 
@@ -100,7 +101,7 @@
 // var server = http.createServer(handleReq);
 
 // function handleReq(req, res) {
-//   res.writeHeader('202', { 'Content-Type': 'text/html' });
+//   res.writeHead('202', { 'Content-Type': 'text/html' });
 //   res.end('<h3>Welcome to AltCampus</h3>');
 // }
 
@@ -114,8 +115,8 @@
 // var server = http.createServer(handleReq);
 
 // function handleReq(req, res) {
-//   res.writeHead(200, { 'Content-Type': 'application/json' });
-//   res.end(`{success: true, message: 'Welcome to Nodejs'}`);
+//   res.writeHead(201, { 'Content-Type': 'application/json' });
+//   res.end(JSON.stringify({success: true, message: 'Welcome to Nodejs'}));
 // }
 
 // server.listen(8888, () => {
@@ -160,29 +161,35 @@
 
 /////////////////////////////////////////////
 
-//
-//////////////////////////////////
+// var http = require('http');
+// var fs = require('fs');
+// var server = http.createServer(handleReq);
 
-var url = require('url');
+// function handleReq(req, res) {
+//   if (req.method === 'GET' && req.url === '/users') {
+//     res.setHeader('Content-Type', 'text/html');
+//     fs.createReadStream('./form.html').pipe(res);
+//   } else if (req.method === 'GET' && req.url === '/users') {
+//     res.end('Posted for the second time');
+//   }
+// }
+
+// server.listen(2345, () => {
+//   console.log('server listening on port 2345');
+// });
+
+////////////////////////////////////
+
 var http = require('http');
+var url = require('url');
 var server = http.createServer(handleReq);
 
 function handleReq(req, res) {
-  var parsedUrl = parse(url);
-  var pathname = parsedUrl.pathname;
-  console.log(parsedUrl);
-  if (req.method === 'GET' && req.url === '/users') {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.write('<input  placeholder ="name"></input>');
-    res.write('<input placeholder ="email"></input>');
-    res.end();
-  } else if (req.method === 'POST' && req.url === '/users') {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Posted for the 2nd time');
-  } else {
-    res.writeHead(404, { 'Content-Type': 'text/html' });
-    res.end('<h2>ERROR</h2>');
-  }
+  var parsedUrl = url.parse(req.url, true);
+  console.log(parsedUrl.pathname, req.url);
+  res.writeHead(201, { 'Content-Type': 'application/json' });
+
+  res.end(JSON.stringify(parsedUrl.query));
 }
 
 server.listen(2345, () => {
